@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import insert, update, delete
 from sqlalchemy.future import select
-from models import *
+from models.models import House
 
 class DB:
 
@@ -23,6 +23,14 @@ class DB:
     async def get_all_by_landlord_id(self, landlordId):
         result = await self.session.execute(select(House).where(House.landlord_id == landlordId))
         return result.scalars().all()
+
+    async def get_all_house_keys(self, id):
+        result = await self.session.execute(select(House.houseKey).where(House.id == id))
+        return result.scalars().all()
+
+    async def get_house_by_house_key(self, houseKey):
+        result = await self.session.execute(select(House).where(House.houseKey == houseKey))
+        return result.scalars().first()
 
     async def insert(self, data):
         self.session.add(data)
