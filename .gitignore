@@ -1,5 +1,11 @@
+README.md
+*.pyc
+*.pyo
+*.pyd
 __pycache__
-alembic/versions
-models/__pycache__
-models/static/ServiceAccount.json
+.pytest_cache
 venv
+alembic/versions/*
+!alembic/versions/.gitkeep
+models/static/ServiceAccount.json
+
