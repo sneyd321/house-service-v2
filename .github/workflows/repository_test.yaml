@@ -42,13 +42,14 @@ jobs:
           python -m pip install --upgrade pip
           pip install flake8 pytest
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Create Firebase Service Account
+        run: |
+          gcloud iam service-accounts keys create ./models/static/ServiceAccount.json --iam-account=firebase-adminsdk-rbs1y@roomr-222721.iam.gserviceaccount.com
       - name: Run Alembic
         run: |
           alembic revision --autogenerate
           alembic upgrade head
-      - name: Create Firebase Service Account
-        run: |
-          gcloud iam service-accounts keys create ./models/static/ServiceAccount.json --iam-account=firebase-adminsdk-rbs1y@roomr-222721.iam.gserviceaccount.com
+      
       - name: Test with pytest
         run: |
           pytest tests/test_repository.py --asyncio-mode=strict
