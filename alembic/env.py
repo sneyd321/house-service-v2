@@ -7,9 +7,8 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import AsyncEngine
 import sys, os
 
-projectPath = os.path.dirname(sys.path[0])
-sys.path.insert(0, projectPath)
-from main import Base
+
+from models.models import Base
 
 from alembic import context
 
