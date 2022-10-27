@@ -35,19 +35,21 @@ async def create_house(request: HouseSchema):
 
 @app.get("/Landlord/{landlordId}/House")
 async def get_house_by_id(landlordId: int):
-    house = House(landlordId=landlordId)
-    houses = await repository.get_all_by_landlord_id(house)
+    house = House(firebase, landlordId=landlordId)
+    monad = await repository.get_all_by_landlord_id(house)
     if monad.has_errors():
          return HTTPException(status_code=monad.error_status["status"], detail=monad.error_status["reason"])
-    return [house.to_json() for house in houses]
+    return [house.to_json() for house in monad.get_param_at(0)]
     
 
 @app.get("/House/{houseKey}")
 async def get_house_by_house_key(houseKey: str):
-    house = await repository.get_house_by_house_key(houseKey)
-    if not house:
+    house = House(firebase, landlordId=0)
+    house.houseKey = houseKey
+    monad = await repository.get_house_by_house_key(house)
+    if monad.has_errors():
         return HTTPException(status_code=404, detail="Not found")
-    return house.to_json()
+    return monad.get_param_at(0).to_json()
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8082)

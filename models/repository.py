@@ -20,13 +20,12 @@ class Repository:
             monad = await RepositoryMaybeMonad(house) \
                 .bind_data(self.db.get_all_house_keys)
             if monad.has_errors():
+                print(monad.error_status)
                 return monad
             
             monad = await RepositoryMaybeMonad(house, monad.get_param_at(0)) \
                 .bind_data(self.generate_hash)
-            
-
-            
+               
             monad = await RepositoryMaybeMonad(house) \
                 .bind(self.db.insert)
             if monad.has_errors():
@@ -47,6 +46,9 @@ class Repository:
         async with self.db.get_session():
             monad = await RepositoryMaybeMonad(house) \
                 .bind_data(self.db.get_house_by_house_key)
+            if monad.has_errors():
+                self.db.rollback()
+                return monad
             return await monad.bind(self.commit)
           
 
