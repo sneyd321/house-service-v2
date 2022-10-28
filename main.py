@@ -6,9 +6,9 @@ from models.repository import Repository
 from models.models import House
 from models.Firebase import Firebase
 
-user = os.environ.get("MYSQL_USER", "root")
-password = os.environ.get("MYSQL_PASS", "root")
-host = os.environ.get("MYSQL_HOST", "localhost")
+user = os.environ.get("DB_USER", "root")
+password = os.environ.get("DB_PASS", "root")
+host = os.environ.get("DB_HOST", "localhost")
 database = "roomr"
 
 db = DB(user, password, host, database)
