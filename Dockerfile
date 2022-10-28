@@ -7,9 +7,9 @@ COPY ./requirements.txt ./requirements.txt
 RUN pip3 install --no-cache-dir -r requirements.txt
 
 ENV PORT=$PORT
-ENV MYSQL_HOST=host.docker.internal
-ENV MYSQL_USER=root
-ENV MYSQL_PASS=root
+ENV DB_HOST=host.docker.internal
+ENV DB_USER=root
+ENV DB_PASS=root
 
 COPY . .
 
