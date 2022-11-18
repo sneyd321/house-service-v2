@@ -14,8 +14,10 @@ class House(Base):
     houseKey = Column(String(10), nullable=False, unique=True)
     firebaseId = Column(String(100), nullable=False)
 
-    def __init__(self, firebase, landlordId):
+    def __init__(self, landlordId):
         self.landlord_id = landlordId
+        
+    def init_firebase(self, firebase):
         self.firebase = firebase
         self.firebaseId = self.firebase.get_firebase_id()
        

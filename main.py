@@ -26,7 +26,8 @@ async def health_check():
 
 @app.post("/House")
 async def create_house(request: HouseSchema):
-    house = House(firebase, **request.dict())
+    house = House(**request.dict())
+    house.init_firebase(firebase)
     monad = await repository.insert(house)
     if monad.has_errors():
          return HTTPException(status_code=monad.error_status["status"], detail=monad.error_status["reason"])
@@ -35,7 +36,7 @@ async def create_house(request: HouseSchema):
 
 @app.get("/Landlord/{landlordId}/House")
 async def get_house_by_id(landlordId: int):
-    house = House(firebase, landlordId=landlordId)
+    house = House(landlordId=landlordId)
     monad = await repository.get_all_by_landlord_id(house)
     if monad.has_errors():
          return HTTPException(status_code=monad.error_status["status"], detail=monad.error_status["reason"])
@@ -44,7 +45,7 @@ async def get_house_by_id(landlordId: int):
 
 @app.get("/House/{houseKey}")
 async def get_house_by_house_key(houseKey: str):
-    house = House(firebase, landlordId=0)
+    house = House(landlordId=0)
     house.houseKey = houseKey
     monad = await repository.get_house_by_house_key(house)
     if monad.has_errors():
