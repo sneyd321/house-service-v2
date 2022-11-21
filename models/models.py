@@ -20,6 +20,8 @@ class House(Base):
     def init_firebase(self, firebase):
         self.firebase = firebase
         self.firebaseId = self.firebase.get_firebase_id()
+
+  
        
     def generate_hash(self):
         self.houseKey = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))

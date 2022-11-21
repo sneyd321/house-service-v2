@@ -33,6 +33,12 @@ class Firebase:
         document = collection.document()
         document.set({})
         return document.id
+
+    def delete_document(self, firebaseId):
+        db = self._db
+        collection = db.collection(u'House')
+        document = collection.document(firebaseId)
+        document.delete()
         
 
        

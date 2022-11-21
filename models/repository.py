@@ -33,6 +33,23 @@ class Repository:
             else:
                 await self.db.commit()
             return monad
+
+    async def delete(self, house, firebase):
+        async with self.db.get_session():
+            monad = await RepositoryMaybeMonad(house) \
+                .bind_data(self.db.get_house_by_id)
+            houseFromDB = monad.get_param_at(0)
+            if houseFromDB is None:
+                return RepositoryMaybeMonad(None, error_status={"status": 404, "reason": f"House not found with id {house.id}"})
+            
+            firebase.delete_document(houseFromDB.firebaseId)
+            monad = await RepositoryMaybeMonad(houseFromDB) \
+                .bind(self.db.delete)
+            if monad.has_errors():
+                await self.db.rollback()
+            else:
+                await self.db.commit()
+            return monad
         
 
     async def get_all_by_landlord_id(self, house):

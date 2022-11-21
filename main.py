@@ -52,5 +52,14 @@ async def get_house_by_house_key(houseKey: str):
         return HTTPException(status_code=404, detail="Not found")
     return monad.get_param_at(0).to_json()
 
+@app.delete("/House/{houseId}")
+async def delete_house(houseId):
+    house = House(0)
+    house.id = houseId
+    monad = await repository.delete(house, firebase)
+    if monad.has_errors():
+         return HTTPException(status_code=monad.error_status["status"], detail=monad.error_status["reason"])
+    return monad.get_param_at(0).to_json()
+
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8082)
