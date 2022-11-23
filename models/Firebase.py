@@ -1,6 +1,7 @@
 from firebase_admin import credentials, storage
 import firebase_admin, base64
 from firebase_admin import firestore
+import datetime
 
 class Firebase:
 
@@ -39,6 +40,20 @@ class Firebase:
         collection = db.collection(u'House')
         document = collection.document(firebaseId)
         document.delete()
+        
+    def tenant_account_created_notification(self, firebaseId, tenantData): 
+        landlordCollection = self._db.collection(u'House').document(firebaseId).collection("Landlord")
+        content = {
+            "Name": "TenantAccountCreated",
+            "houseKey": tenantData["houseKey"],
+            "dateCreated": datetime.datetime.now(),
+            "data": {
+                "firstName": tenantData["firstName"],
+                "lastName": tenantData["lastName"],
+                "email": tenantData["email"]
+            }
+        }
+        landlordCollection.document().set(content)
         
 
        

@@ -38,6 +38,7 @@ class Repository:
         async with self.db.get_session():
             monad = await RepositoryMaybeMonad(house) \
                 .bind_data(self.db.get_house_by_id)
+                
             houseFromDB = monad.get_param_at(0)
             if houseFromDB is None:
                 return RepositoryMaybeMonad(None, error_status={"status": 404, "reason": f"House not found with id {house.id}"})

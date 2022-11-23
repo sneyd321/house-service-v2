@@ -1,6 +1,6 @@
 import uvicorn, os
 from fastapi import FastAPI, HTTPException
-from models.schema import HouseSchema
+from models.schema import HouseSchema, TenantAccountCreatedNotificationSchema
 from models.db import DB
 from models.repository import Repository
 from models.models import House
@@ -60,6 +60,12 @@ async def delete_house(houseId):
     if monad.has_errors():
          return HTTPException(status_code=monad.error_status["status"], detail=monad.error_status["reason"])
     return monad.get_param_at(0).to_json()
+
+
+@app.post("/Notification/{firebaseId}/TenantAccountCreated")
+async def add_notification(firebaseId: str, request: TenantAccountCreatedNotificationSchema):
+    firebase.tenant_account_created_notification(firebaseId, request.dict())
+    return {"status": "Notification sent successfully"}
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8082)
