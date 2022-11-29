@@ -72,13 +72,14 @@ class Repository:
             houseFromDB = monad.get_param_at(0)
             if houseFromDB is None:
                 return RepositoryMaybeMonad(None, error_status={"status": 404, "reason": f"House not found with id {house.id}"})
-            
+            print(monad)
             if monad.has_errors():
                 await RepositoryMaybeMonad() \
-                .bind(self.db.rollback)
+                    .bind(self.db.rollback)
                 return monad
             await RepositoryMaybeMonad() \
                 .bind(self.db.commit)
+            return monad
           
 
    
