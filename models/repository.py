@@ -29,9 +29,11 @@ class Repository:
             monad = await RepositoryMaybeMonad(house) \
                 .bind(self.db.insert)
             if monad.has_errors():
-                await self.db.rollback()
-            else:
-                await self.db.commit()
+                await RepositoryMaybeMonad() \
+                .bind(self.db.rollback)
+                return monad
+            await RepositoryMaybeMonad() \
+                .bind(self.db.commit)
             return monad
 
     async def delete(self, house, firebase):
@@ -47,9 +49,11 @@ class Repository:
             monad = await RepositoryMaybeMonad(houseFromDB) \
                 .bind(self.db.delete)
             if monad.has_errors():
-                await self.db.rollback()
-            else:
-                await self.db.commit()
+                await RepositoryMaybeMonad() \
+                .bind(self.db.rollback)
+                return monad
+            await RepositoryMaybeMonad() \
+                .bind(self.db.commit)
             return monad
         
 
@@ -64,10 +68,17 @@ class Repository:
         async with self.db.get_session():
             monad = await RepositoryMaybeMonad(house) \
                 .bind_data(self.db.get_house_by_house_key)
+
+            houseFromDB = monad.get_param_at(0)
+            if houseFromDB is None:
+                return RepositoryMaybeMonad(None, error_status={"status": 404, "reason": f"House not found with id {house.id}"})
+            
             if monad.has_errors():
-                self.db.rollback()
+                await RepositoryMaybeMonad() \
+                .bind(self.db.rollback)
                 return monad
-            return await monad.bind(self.commit)
+            await RepositoryMaybeMonad() \
+                .bind(self.db.commit)
           
 
    
